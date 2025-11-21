@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>文章列表 - 宥哥</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <main class="content">
+    <h1>文章專區</h1>
+    <div id="articles-list" class="works-grid"></div>
+  </main>
+  <script src="../js/common.js"></script>
+  <script>
+    const articles = [
+      { title: "如何拍出電影感人像", date: "2025-11-17", file: "article1.html", img: "../assets/images/article1.jpg" },
+      { title: "貓咪攝影 5 個秘訣", date: "2025-11-15", file: "article2.html", img: "../assets/images/article2.jpg" }
+    ];
+    document.getElementById('articles-list').innerHTML = articles.map(a => `
+      <a href="${a.file}" class="article-item">
+        <img src="${a.img}" alt="${a.title}">
+        <div class="info">
+          <h3>${a.title}</h3>
+          <p><small>${a.date}</small></p>
+        </div>
+      </a>
+    `).join('');
+  </script>
+</body>
+</html>

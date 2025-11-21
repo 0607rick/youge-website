@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>留言板 - 宥哥</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .delete-btn {background:#e74c3c;color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;cursor:pointer;margin-left:1rem;font-size:0.8rem;}
+    .delete-btn:hover {background:#c0392b;}
+    .comment {margin:1.5rem 0;padding:1rem;background:#f9f9f9;border-radius:12px;}
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <main class="content">
+    <h1>留言板</h1>
+    <div id="guestbook-form">
+      <input type="text" id="name" placeholder="你的名字">
+      <textarea id="message" rows="4" placeholder="留個言吧～"></textarea>
+      <button id="submit-comment">送出留言</button>
+    </div>
+    <div id="comments-list">載入中…</div>
+  </main>
+
+  <script src="js/common.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script>
+    // ← 把你剛剛在 Firebase 複製的那段貼在這裡！
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      authDomain: "youge-website.firebaseapp.com",
+      projectId: "youge-website",
+      storageBucket: "youge-website.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:xxxxxxxxxxxxxxxxxx"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const commentsRef = db.collection('comments');
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const isAdmin = window.isYougeAdmin?.() || false;
+
+    if (currentUser) {
+      document.getElementById('name').value = currentUser.username;
+      document.getElementById('name').readOnly = true;
+    }
+
+    // 送出留言
+    document.getElementById('submit-comment').onclick = () => {
+      const name = document.getElementById('name').value.trim() || '匿名';
+      const message = document.getElementById('message').value.trim();
+      if (!message) return alert('請輸入留言內容！');
+      commentsRef.add({
+        name: name,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById('message').value = '';
+      });
+    };
+
+    // 即時顯示留言
+    commentsRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      const list = document.getElementById('comments-list');
+      list.innerHTML = '';
+      snapshot.forEach(doc => {
+        const c = doc.data();
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.innerHTML = `
+          <strong>${c.name}</strong> <small>${new Date(c.timestamp?.toDate()).toLocaleString('zh-TW')}</small>
+          ${isAdmin ? `<button class="delete-btn" onclick="deleteMsg('${doc.id}')">刪除</button>` : ''}
+          <p>${c.message.replace(/\n/g, '<br>')}</p>
+        `;
+        list.appendChild(div);
+      });
+    });
+
+    // 只有你能刪除
+    window.deleteMsg = function(id) {
+      if (!isAdmin) return;
+      if (confirm('確定刪除這則留言？')) {
+        commentsRef.doc(id).delete();
+      }
+    };
+  </script>
+</body>
+</html>
