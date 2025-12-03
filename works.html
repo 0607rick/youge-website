@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>作品集 - 宥哥</title>
+
+  <!-- 1. 先載入樣式（最上面） -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 2. 再放你自己的作品集專用樣式（一定要在 css 之後！） -->
+  <style>
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      padding: 2rem 5%;
+      margin-top: 2rem;
+    }
+    .work-item {
+      background: white;
+      border-radius: 20px;
+      overflow: visible !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+      height: auto !important;
+    }
+    .work-item img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+    }
+    .work-item .info {
+      padding: 1.6rem;
+      text-align: center;
+    }
+    .work-item h3 {
+      margin: 0 0 0.8rem 0;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .work-item p {
+      margin: 0;
+      color: #666;
+      font-size: 1.05rem;
+    }
+    .work-item:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 30px 60px rgba(107,79,255,0.3);
+    }
+  </style>
+
+  <!-- 3. 最後放 Firebase（順序不能亂！） -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div id="navbar-container"></div>
+  <main class="content" style="padding-top:100px;">
+    <h1>作品集</h1>
+    <div class="works-grid">
+      <div class="work-item">
+        <img src="assets/images/article1.jpg" alt="日落海岸">
+        <div class="info">
+          <h3>日落海岸</h3>
+          <p>2025 夏日攝影作品</p>
+        </div>
+      </div>
+      <div class="work-item">
+        <img src="assets/images/article2.jpg" alt="城市夜景">
+        <div class="info">
+          <h3>城市夜景</h3>
+          <p>台北 101 燈光秀</p>
+        </div>
+      </div>
+      <!-- 你可以繼續加更多作品 -->
+    </div>
+  </main>
+  <script src="js/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+/* css/style.css - 宥哥宇宙 終極完美版 2025.12.03 */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: #f8f9fa;
+  color: #333;
+  line-height: 1.7;
+  padding-top: 80px; /* 給固定導覽列留空間 */
+}
+
+/* ====================== 導覽列 - 左LOGO 右全部選單 ====================== */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(135deg, #6e8efb, #a777e2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  z-index: 999;
+  backdrop-filter: blur(12px);
+}
+
+/* 左邊 LOGO + 宥哥 + 頭像 */
+.logo-text-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+}
+.logo-text-with-icon span {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+}
+.logo-text-with-icon img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 右邊全部選單（首頁～限制網站） */
+.nav-links {
+  display: flex;
+  gap: 3.2rem;
+  list-style: none;
+  margin-left: auto;      /* 關鍵：整個推到右邊 */
+  margin-right: 2.5rem;
+  align-items: center;
+}
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.15rem;
+  position: relative;
+  padding: 0.5rem 0;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  background: white;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+}
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* 限制網站紅色膠囊 */
+.nav-links a[href*="vip.html"] {
+  background: rgba(255,71,87,0.25);
+  padding: 0.75rem 1.9rem;
+  border-radius: 50px;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(255,71,87,0.4);
+}
+.nav-links a[href*="vip.html"]:hover {
+  background: rgba(255,71,87,0.45);
+  transform: translateY(-3px);
+}
+
+/* 登入按鈕（最右邊） */
+.admin-control {
+  margin-left: 1rem;
+}
+.admin-btn {
+  background: rgba(255,255,255,0.25);
+  color: white;
+  border: none;
+  padding: 0.75rem 2.2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.css3s;
+}
+.admin-btn:hover {
+  background: rgba(255,255,255,0.45);
+  transform: translateY(-3px);
+}
+
+/* 漢堡選單圖示 */
+.hamburger {
+  display: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* ====================== 手機版超帥橫向滑動選單 ====================== */
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: rgba(110,142,251,0.98);
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 1.2rem 5%;
+    gap: 2.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(15px);
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+  .admin-control { margin-left: 1rem; }
+}
+
+/* ====================== 其他頁面樣式（保持超美） ====================== */
+.content { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+.work-item {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: all 0.4s;
+}
+.work-item:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px rgba(107,79,255,0.25);
+}
+.work-item img { width: 100%; height: 220px; object-fit: cover; }
+.work-item .info { padding: 1.5rem; text-align: center; }
+
+/* 留言板 */
+#guestbook-form {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+}
+#guestbook-form input,
+#guestbook-form textarea {
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+#guestbook-form button {
+  background: #6e8efb;
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.comment {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.8rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

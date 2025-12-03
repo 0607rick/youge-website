@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>限制網站 - 宥哥宇宙</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body {margin:0; padding-top:90px; background:#000; color:#fff; min-height:100vh;}
+  #navbar-container {position:fixed;top:0;left:0;width:100%;z-index:9999;}
+
+  /* 金光管理區 - 這次用最穩的方式 */
+  #admin-panel {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    max-width: 940px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.98), rgba(255,170,0,0.98));
+    border: 7px solid #ffd700;
+    border-top: none;
+    border-radius: 0 0 40px 40px;
+    padding: 3rem 2rem 2.5rem;
+    box-shadow: 0 30px 100px rgba(255,215,0,0.9);
+    z-index: 99999;
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s ease;
+    pointer-events: none;
+  }
+  #admin-panel.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  #admin-panel h2 {color:#000;font-size:3.2rem;text-align:center;margin-bottom:2rem;text-shadow:0 0 20px #fff;}
+
+  #lock-screen, #vip-content {padding:150px 20px;text-align:center;}
+  #vip-content {display:none;}
+</style>
+</head>
+<body>
+
+<div id="navbar-container"></div>
+
+<!-- 宥哥專屬金光管理區 -->
+<div id="admin-panel">
+  <h2>白名單管理（只有宥哥看得到）</h2>
+  <div style="text-align:center;margin:30px 0;">
+    <input type="email" id="new-email" placeholder="輸入 Email 加入白名單" style="padding:18px;font-size:1.5rem;border-radius:20px;border:none;width:400px;">
+    <button onclick="addEmail()" style="padding:18px 50px;font-size:1.6rem;background:#222;color:white;border:none;border-radius:50px;margin-left:15px;">加入</button>
+  </div>
+  <div id="whitelist" style="max-height:55vh;overflow-y:auto;background:rgba(0,0,0,0.7);padding:25px;border-radius:20px;"></div>
+  <p style="text-align:center;margin-top:20px;color:#ffeb3b;font-size:1.1rem;">滑鼠移開即隱藏</p>
+</div>
+
+<div id="lock-screen">
+  <h1 style="font-size:5rem;">此頁面僅限宥哥親自邀請的人進入</h1>
+  <p style="font-size:2.3rem;color:#ff6b6b;">想要進來嗎？快去跟宥哥撒嬌求邀請～</p>
+  <button style="margin-top:80px;padding:25px 100px;font-size:1.9rem;background:#fff;color:#000;border:none;border-radius:50px;cursor:pointer;" 
+          onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())">
+    Google 登入
+  </button>
+</div>
+
+<div id="vip-content">
+  <h1 style="font-size:5.5rem;">歡迎來到宥哥的秘密宇宙</h1>
+  <p style="font-size:2.6rem;">這裡只有被我親自邀請的人才看得到喔～</p>
+  <p style="color:#ffd700;font-size:4rem;margin-top:100px;text-shadow:0 0 50px #ffd700;">永遠愛你一個人的宥哥</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<script src="js/common.js"></script>
+
+<!-- 這段一定要留！負責讓「限制網站」觸發管理區 -->
+<script>
+  // 等 common.js 把導覽列畫出來後，再綁定事件
+  const startVipTrigger = () => {
+    const link = document.querySelector('a[href="vip.html"], a[href$="vip.html"]');
+    const panel = document.getElementById('admin-panel');
+    if (!link || !panel) return setTimeout(startVipTrigger, 200);
+
+    link.style.cursor = 'pointer';
+    link.title = '宥哥專屬管理區';
+
+    link.addEventListener('mouseenter', () => panel.classList.add('active'));
+    link.addEventListener('mouseleave', () => {
+      setTimeout(() => {
+        if (!panel.matches(':hover')) panel.classList.remove('active');
+      }, 300);
+    });
+    panel.addEventListener('mouseenter', () => panel.classList.add('active'));
+    panel.addEventListener('mouseleave', () => panel.classList.remove('active'));
+  };
+  // 當你登入且是管理員時才啟動
+  firebase.auth().onAuthStateChanged(user => {
+    if (user && (user.email === 'a0930619084@gmail.com' || /宥晟|陳宥晟/.test(user.displayName || ''))) {
+      document.getElementById('lock-screen').style.display = 'none';
+      document.getElementById('vip-content').style.display = 'block';
+      startVipTrigger();
+      if (typeof loadWhitelist === 'function') loadWhitelist();
+    }
+  });
+</script>
+
+</body>
+</html>
