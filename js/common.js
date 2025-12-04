@@ -1,9 +1,9 @@
-// js/common.js → 宥哥宇宙永不翻車版（2025.12.03）
+// js/common.js → 宥哥宇宙 2025 最終永不翻車版（專為 Firebase v10.8.1 compat 打造）
 document.addEventListener('DOMContentLoaded', () => {
   const basePath = location.pathname.includes('/articles/') ? '../' : './';
 
-  // Firebase 初始化
-  firebase.initializeApp({
+  // 正確初始化 Firebase v10 compat
+  const app = firebase.initializeApp({
     apiKey: "AIzaSyBzB_8ZZ3kIpg8ddVBDRe4geiq2GteqDCM",
     authDomain: "youge-website.firebaseapp.com",
     projectId: "youge-website",
@@ -15,29 +15,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // 渲染導覽列
-  const renderNavbar = () => {
-    const isVip = location.pathname.includes('vip.html');
+  // 強制渲染導覽列（不管有沒有登入都要先顯示！）
+  const renderNavbar = (user = null) => {
+    const displayName = user?.displayName || user?.email?.split('@')[0] || '訪客';
+    const isLoggedIn = !!user;
+
     document.getElementById('navbar-container').innerHTML = `
-      <nav class="navbar">
-        <div class="logo-text-with-icon" onclick="location.href='${basePath}index.html'" style="cursor:pointer;display:flex;align-items:center;gap:12px;">
-          <span style="font-size:1.9rem;font-weight:900;color:white;">宥哥</span>
+      <nav class="navbar" style="position:fixed;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg,#6e8efb,#a777e2);display:flex;align-items:center;justify-content:space-between;padding:0 5%;box-shadow:0 8px 30px rgba(0,0,0,0.2);z-index:999;backdrop-filter:blur(12px);">
+        
+        <!-- 左邊 LOGO -->
+        <div onclick="location.href='${basePath}index.html'" style="cursor:pointer;display:flex;align-items:center;gap:14px;">
+          <span style="font-size:2rem;font-weight:900;color:white;">宥哥</span>
           <img src="${basePath}assets/images/logo.png" alt="LOGO" style="width:48px;height:48px;border-radius:50%;">
         </div>
-        <ul class="nav-links">
-          <li><a href="${basePath}index.html">首頁</a></li>
-          <li><a href="${basePath}about.html">關於我</a></li>
-          <li><a href="${basePath}works.html">作品集</a></li>
-          <li><a href="${basePath}articles/index.html">文章</a></li>
-          <li><a href="${basePath}guestbook.html">留言板</a></li>
-          <li><a href="${basePath}vip.html" style="color:#ff4757;font-weight:bold;background:rgba(255,71,87,0.15);padding:8px 18px;border-radius:12px;">
-            限制網站
-          </a></li>
+
+        <!-- 中間選單（靠右） -->
+        <ul style="display:flex;gap:3rem;list-style:none;margin-left:auto;margin-right:2.5rem;align-items:center;">
+          <li><a href="${basePath}index.html" style="color:white;text-decoration:none;font-weight:600;font-size:1.15rem;position:relative;">首頁</a></li>
+          <li><a href="${basePath}about.html" style="color:white;text-decoration:none;font-weight:600;font-size:1.15rem;position:relative;">關於我</a></li>
+          <li><a href="${basePath}works.html" style="color:white;text-decoration:none;font-weight:600;font-size:1.15rem;position:relative;">作品集</a></li>
+          <li><a href="${basePath}articles/index.html" style="color:white;text-decoration:none;font-weight:600;font-size:1.15rem;position:relative;">文章</a></li>
+          <li><a href="${basePath}guestbook.html" style="color:white;text-decoration:none;font-weight:600;font-size:1.15rem;position:relative;">留言板</a></li>
+          <li><a href="${basePath}vip.html" style="color:#ff4757;font-weight:bold;background:rgba(255,71,87,0.25);padding:0.75rem 1.9rem;border-radius:50px;text-decoration:none;">限制網站</a></li>
         </ul>
-        <div class="admin-control">
-          <button onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())" class="admin-btn">登入</button>
+
+        <!-- 右邊登入/登出 -->
+        <div style="display:flex;align-items:center;gap:1rem;">
+          ${isLoggedIn ? 
+            `<span style="color:white;font-weight:600;">Hi, ${displayName}</span>
+             <button onclick="firebase.auth().signOut()" style="background:rgba(255,255,255,0.25);color:white;border:none;padding:0.75rem 2rem;border-radius:50px;font-weight:600;cursor:pointer;">登出</button>` 
+            : 
+            `<button onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())" style="background:rgba(255,255,255,0.25);color:white;border:none;padding:0.75rem 2rem;border-radius:50px;font-weight:600;cursor:pointer;">登入</button>`
+          }
         </div>
-        <div class="hamburger">Menu</div>
+
+        <!-- 手機漢堡 -->
+        <div onclick="document.querySelector('ul').style.cssText+='position:fixed;top:80px;left:0;right:0;background:rgba(110,142,251,0.98);flex-direction:column;padding:2rem;gap:1.5rem;text-align:center;'" style="display:none;color:white;font-size:1.8rem;cursor:pointer;" class="hamburger">Menu</div>
       </nav>
     `;
 
@@ -115,3 +128,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderNavbar();
 });
+
