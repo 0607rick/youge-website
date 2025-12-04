@@ -1,8 +1,7 @@
-// js/common.js → 宥哥宇宙 永不翻車最終版（2025.12.04）
+// js/common.js → 宥哥宇宙 2025.12.04 最終無敵版（專治「登入後還是顯示登入」）
 document.addEventListener('DOMContentLoaded', () => {
   const basePath = location.pathname.includes('/articles/') ? '../' : './';
 
-  // Firebase 初始化
   firebase.initializeApp({
     apiKey: "AIzaSyBzB_8ZZ3kIpg8ddVBDRe4geiq2GteqDCM",
     authDomain: "youge-website.firebaseapp.com",
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // 這才是正確的渲染方式！！！
+  // 渲染導覽列（重點修復版）
   const renderNavbar = (user) => {
     const displayName = user?.displayName || user?.email?.split('@')[0] || '訪客';
     const isLoggedIn = !!user;
@@ -55,20 +54,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // 先渲染一次（預設未登入）
+  // 強制先渲染一次（未登入狀態）
   renderNavbar(null);
 
-  // 關鍵！！！只有這行會正確更新登入狀態！！！
+  // 關鍵修復：用 setTimeout 強制等 Firebase 真的準備好
+  const tryRender = () => {
+    const user = auth.currentUser;
+    if (user) {
+      renderNavbar(user);
+      console.log('強制更新成功：', user.email);
+    } else {
+      // 還沒準備好？再等 500ms
+      setTimeout(tryRender, 500);
+    }
+  };
+
+  // 主要監聽（這行一定要有！）
   auth.onAuthStateChanged(user => {
-    console.log('登入狀態更新！', user ? '已登入：' + user.email : '未登入');
-    renderNavbar(user);  // 這行才是真正會更新「登入→登出」的關鍵！
+    console.log('onAuthStateChanged 觸發：', user ? user.email : '未登入');
+    renderNavbar(user);
   });
 
-  // 登出後強制刷新（避免殘留狀態）
-  window.signOut = () => {
-    auth.signOut().then(() => {
-      alert('已登出！');
-      location.reload();
-    });
+  // 登出按鈕加上強制刷新
+  window.signOutAndReload = () => {
+    auth.signOut().then(() => location.reload());
   };
+
+  // 保險起見：最多等 5 秒強制更新一次
+  setTimeout(tryRender, 1000);
+  setTimeout(tryRender, 3000);
+  setTimeout(tryRender, 5000);
 });
