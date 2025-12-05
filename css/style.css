@@ -226,24 +226,3 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
-
-
-.vip-trigger {
-  position: relative;
-  transition: all 0.4s ease;
-}
-.vip-trigger:hover {
-  transform: scale(1.15);
-  text-shadow: 0 0 20px #ffd700 !important;
-}
-
-.vip-master-trigger:hover {
-  transform: scale(1.2) !important;
-  text-shadow: 0 0 30px #ffd700 !important;
-  color: #ffff00 !important;
-}
-
-/* 讓面板永遠可點 */
-#admin-panel.active {
-  pointer-events: auto !important;
-}
