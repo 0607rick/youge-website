@@ -9,30 +9,49 @@
   body {margin:0; padding-top:90px; background:#000; color:#fff; min-height:100vh;}
   #navbar-container {position:fixed;top:0;left:0;width:100%;z-index:9999;}
 
-  /* 金光管理區 - 這次用最穩的方式 */
+  /* 金光管理區 */
   #admin-panel {
-  display:none;
-  position:fixed;
-  top:90px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:900px;
-  background:linear-gradient(135deg,rgba(255,215,0,0.95),rgba(255,150,0,0.95));
-  border:6px solid #ffd93d;
-  border-radius:0 0 32px 32px;
-  padding:2.5rem;
-  box-shadow:0 20px 60px rgba(255,215,0,0.8);
-  z-index:99999;
-  backdrop-filter:blur(15px);
-  animation:slideDown 0.6s ease-out;
-}
-#admin-panel.active {
-  display:block !important;
-}
-  #admin-panel h2 {color:#000;font-size:3.2rem;text-align:center;margin-bottom:2rem;text-shadow:0 0 20px #fff;}
+    display: none;
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 900px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.98), rgba(255,150,0,0.98));
+    border: 6px solid #ffd93d;
+    border-radius: 0 0 32px 32px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 80px rgba(255,215,0,0.9);
+    z-index: 99999;
+    backdrop-filter: blur(15px);
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  #admin-panel.active {
+    display: block;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  #admin-panel h2 {
+    color: #000;
+    font-size: 3.4rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 20px #fff;
+  }
 
-  #lock-screen, #vip-content {padding:150px 20px;text-align:center;}
+  /* 觸發按鈕特效 */
+  .youge-trigger:hover {
+    color: #ffff00 !important;
+    text-shadow: 0 0 25px #ffd700;
+    transform: scale(1.2);
+    transition: all 0.3s;
+  }
+
+  #lock-screen, #vip-content {padding:150px 20px; text-align:center;}
   #vip-content {display:none;}
 </style>
 </head>
@@ -43,27 +62,33 @@
 <!-- 宥哥專屬金光管理區 -->
 <div id="admin-panel">
   <h2>白名單管理（只有宥哥看得到）</h2>
-  <div style="text-align:center;margin:30px 0;">
-    <input type="email" id="new-email" placeholder="輸入 Email 加入白名單" style="padding:18px;font-size:1.5rem;border-radius:20px;border:none;width:400px;">
-    <button onclick="addEmail()" style="padding:18px 50px;font-size:1.6rem;background:#222;color:white;border:none;border-radius:50px;margin-left:15px;">加入</button>
+  <div style="text-align:center; margin:35px 0;">
+    <input type="email" id="new-email" placeholder="輸入 Email 加入白名單" 
+           style="padding:18px; font-size:1.6rem; border-radius:25px; border:none; width:420px;">
+    <button onclick="addEmail()" 
+            style="padding:18px 55px; font-size:1.7rem; background:#222; color:white; border:none; border-radius:50px; margin-left:15px; cursor:pointer;">
+      加入
+    </button>
   </div>
-  <div id="whitelist" style="max-height:55vh;overflow-y:auto;background:rgba(0,0,0,0.7);padding:25px;border-radius:20px;"></div>
-  <p style="text-align:center;margin-top:20px;color:#ffeb3b;font-size:1.1rem;">滑鼠移開即隱藏</p>
+  <div id="whitelist" style="max-height:55vh; overflow-y:auto; background:rgba(0,0,0,0.7); padding:30px; border-radius:20px;"></div>
+  <p style="text-align:center; margin-top:25px; color:#ffeb3b; font-size:1.3rem;">滑鼠移開即隱藏</p>
 </div>
 
 <div id="lock-screen">
   <h1 style="font-size:5rem;">此頁面僅限宥哥親自邀請的人進入</h1>
-  <p style="font-size:2.3rem;color:#ff6b6b;">想要進來嗎？快去跟宥哥撒嬌求邀請～</p>
-  <button style="margin-top:80px;padding:25px 100px;font-size:1.9rem;background:#fff;color:#000;border:none;border-radius:50px;cursor:pointer;" 
+  <p style="font-size:2.4rem; color:#ff6b6b;">想要進來嗎？快去跟宥哥撒嬌求邀請～</p>
+  <button style="margin-top:80px; padding:25px 100px; font-size:2rem; background:#fff; color:#000; border:none; border-radius:50px; cursor:pointer;" 
           onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())">
     Google 登入
   </button>
 </div>
 
 <div id="vip-content">
-  <h1 style="font-size:5.5rem;">歡迎來到宥哥的秘密宇宙</h1>
-  <p style="font-size:2.6rem;">這裡只有被我親自邀請的人才看得到喔～</p>
-  <p style="color:#ffd700;font-size:4rem;margin-top:100px;text-shadow:0 0 50px #ffd700;">永遠愛你一個人的宥哥</p>
+  <h1 style="font-size:5.8rem;">歡迎來到宥哥的秘密宇宙</h1>
+  <p style="font-size:2.8rem;">這裡只有被我親自邀請的人才看得到喔～</p>
+  <p style="color:#ffd700; font-size:4.5rem; margin-top:120px; text-shadow:0 0 60px #ffd700;">
+    永遠愛你一個人的宥哥
+  </p>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -71,108 +96,125 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="js/common.js"></script>
 
-<!-- 這段一定要留！負責讓「限制網站」觸發管理區 -->
-HTML<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const wait = setInterval(() => {
-      if (!firebase?.apps?.length) return;
-      clearInterval(wait);
-  
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      const whitelistRef = db.collection("vip-whitelist");
-      const panel = document.getElementById('admin-panel');
-  
-      // 你永遠是管理員
-      const isYouGe = (user) => {
-        if (!user?.email) return false;
-        const e = user.email.toLowerCase(); // 防呆
-        return e === "d112.212215@yuda.tyc.edu.tw" ||
-               e === "a0930619084@gmail.com" ||
-               (user.displayName || "").includes("宥晟");
-      };
-  
-      // 給所有「限制網站」加上觸發 class
-      const addTrigger = () => {
-        document.querySelectorAll('a[href*="vip.html"]').forEach(link => {
-          link.classList.add('youge-trigger');
-        });
-      };
-      const timer = setInterval(addTrigger, 200);
-      setTimeout(() => clearInterval(timer), 8000);
-  
-      // 核心邏輯：只有滑鼠在「觸發按鈕」或「面板內」才顯示
-      const show = () => panel.classList.add('active');
-      const hide = () => panel.classList.remove('active');
-  
-      document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('.youge-trigger') || e.target.closest('#admin-panel')) {
-          show();
-        }
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const wait = setInterval(() => {
+    if (!firebase?.apps?.length) return;
+    clearInterval(wait);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const whitelistRef = db.collection("vip-whitelist");
+    const panel = document.getElementById('admin-panel');
+
+    // 宥哥本尊判斷
+    const isYouGe = (user) => {
+      if (!user?.email) return false;
+      const e = user.email.toLowerCase();
+      const n = (user.displayName || "").trim();
+      return e === "d112.212215@yuda.tyc.edu.tw" ||
+             e === "a0930619084@gmail.com" ||
+             n.includes("宥晟") || n.includes("陳宥晟");
+    };
+
+    // 給導覽列的「限制網站」加上觸發 class
+    const addTrigger = () => {
+      document.querySelectorAll('a[href*="vip.html"]').forEach(link => {
+        link.classList.add('youge-trigger');
       });
-  
-      document.addEventListener('mouseout', (e) => {
-        // 只有當滑鼠從面板或按鈕「真的離開」才關」
-        if (!e.relatedTarget?.closest('#admin-panel') && 
-            !e.relatedTarget?.closest('.youge-trigger') &&
-            !e.target.closest('#admin-panel') &&
-            !e.target.closest('.youge-trigger')) {
-          hide();
-        }
-      });
-  
-      // 登入判斷
-      auth.onAuthStateChanged(user => {
-        if (!user) {
-          document.getElementById('lock-screen').style.display = 'block';
-          document.getElementById('vip-content').style.display = 'none';
-          hide();
-          return;
-        }
-  
-        if (isYouGe(user)) {
-          document.getElementById('lock-screen').style.display = 'none';
-          document.getElementById('vip-content').style.display = 'block';
-          addTrigger();
-          loadWhitelist();
-        } else {
-          whitelistRef.doc(user.email.toLowerCase()).get().then(doc => {
-            if (doc.exists) {
-              document.getElementById('lock-screen').style.display = 'none';
-              document.getElementById('vip-content').style.display = 'block';
-            } else {
-              alert('快去跟宥哥撒嬌求白名單～');
-              auth.signOut();
-            }
-          });
-        }
-      });
-  
-      // 白名單功能
-      window.addEmail = async () => {
-        const email = document.getElementById('new-email').value.trim().toLowerCase();
-        if (!email.includes('@')) return alert('Email 怪怪的');
-        await whitelistRef.doc(email).set({added: new Date()});
-        document.getElementById('new-email').value = '';
-        alert('已加入：' + email);
+    };
+    const t = setInterval(addTrigger, 200);
+    setTimeout(() => clearInterval(t), 10000);
+
+    // 顯示 / 隱藏面板
+    const show = () => panel.classList.add('active');
+    const hide = () => panel.classList.remove('active');
+
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('.youge-trigger') || e.target.closest('#admin-panel')) {
+        show();
+      }
+    });
+
+    document.addEventListener('mouseout', e => {
+      if (!e.relatedTarget?.closest('#admin-panel') && 
+          !e.relatedTarget?.closest('.youge-trigger')) {
+        hide();
+      }
+    });
+
+    // 登入狀態處理
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        document.getElementById('lock-screen').style.display = 'block';
+        document.getElementById('vip-content').style.display = 'none';
+        hide();
+        return;
+      }
+
+      if (isYouGe(user)) {
+        document.getElementById('lock-screen').style.display = 'none';
+        document.getElementById('vip-content').style.display = 'block';
+        addTrigger();
         loadWhitelist();
-      };
-  
-      window.loadWhitelist = async () => {
-        const snap = await whitelistRef.orderBy('added', 'desc').get();
-        const box = document.getElementById('whitelist');
-        box.innerHTML = snap.empty ? '<p style="color:#ffd700;">白名單空空的～</p>' : '';
-        snap.forEach(doc => {
-          box.innerHTML += `
-            <div style="padding:16px;background:rgba(255,255,255,0.2);margin:12px 0;border-radius:16px;display:flex;justify-content:space-between;align-items:center;font-size:1.5rem;">
-              <span>${doc.id}</span>
-              <button onclick="firebase.firestore().collection('vip-whitelist').doc('${doc.id}').delete().then(loadWhitelist)"
-                      style="background:#e74c3c;padding:10px 24px;border:none;border-radius:12px;color:white;">移除</button>
-            </div>`;
+      } else {
+        whitelistRef.doc(user.email.toLowerCase()).get().then(doc => {
+          if (doc.exists) {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('vip-content').style.display = 'block';
+          } else {
+            alert('快去跟宥哥撒嬌求白名單啦～');
+            auth.signOut();
+          }
         });
-      };
-    }, 100);
-  });
-  </script>
+      }
+    });
+
+    // 加入白名單
+    window.addEmail = async () => {
+      const email = document.getElementById('new-email').value.trim().toLowerCase();
+      if (!email || !email.includes('@')) return alert('Email 格式錯了喔～');
+      await whitelistRef.doc(email).set({ added: new Date(), by: auth.currentUser.email });
+      document.getElementById('new-email').value = '';
+      alert('已加入白名單：' + email);
+      loadWhitelist();
+    };
+
+    // 載入白名單（重點：移除按鈕改用 addEventListener，永遠不會壞）
+    window.loadWhitelist = async () => {
+      const snap = await whitelistRef.orderBy('added', 'desc').get();
+      const box = document.getElementById('whitelist');
+      box.innerHTML = '';
+
+      if (snap.empty) {
+        box.innerHTML = '<p style="color:#ffeb3b;text-align:center;padding:40px;font-size:1.8rem;">白名單空空的～快去寵幸別人吧宥哥♡</p>';
+        return;
+      }
+
+      snap.forEach(doc => {
+        const email = doc.id;
+        const item = document.createElement('div');
+        item.innerHTML = `
+          <div style="padding:18px 24px; background:rgba(255,255,255,0.22); margin:15px 0; border-radius:20px; 
+                      display:flex; justify-content:space-between; align-items:center; font-size:1.6rem; box-shadow:0 6px 20px rgba(0,0,0,0.5);">
+            <span style="color:#fff; font-weight:600;">${email}</span>
+            <button class="del-btn" style="background:#e74c3c; color:white; border:none; padding:12px 32px; 
+                                            border-radius:15px; font-weight:bold; cursor:pointer;">
+              移除
+            </button>
+          </div>`;
+        // 超穩移除方式
+        item.querySelector('.del-btn').addEventListener('click', async () => {
+          if (confirm(`確定要把 ${email} 踢出宥哥宇宙嗎？`)) {
+            await whitelistRef.doc(email).delete();
+            loadWhitelist();
+          }
+        });
+        box.appendChild(item);
+      });
+    };
+  }, 100);
+});
+</script>
 </body>
 </html>
