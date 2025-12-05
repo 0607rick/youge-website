@@ -87,12 +87,11 @@
 
         const isAdmin = 
           user.email === "a0930619084@gmail.com" || 
-          user.email.toLowerCase() === "d112.212215@yuda.tyc.edu.tw" ||  // ← 你也可以直接加 email
+          user.email.toLowerCase().includes("212215") ||           // 學號直接包含就認
+          user.email.toLowerCase().includes("d112.212215") ||      // 保險再加一次
           (user.displayName && (
             user.displayName.includes("宥晟") || 
-            user.displayName.includes("陳宥晟") ||
-            user.displayName.trim() === "宥晟" ||
-            user.displayName.trim() === "陳宥晟"
+            user.displayName.includes("陳宥晟")
           ));
 
         if (isAdmin) {
@@ -153,4 +152,5 @@
 </script>
 </body>
 </html>
+
 
