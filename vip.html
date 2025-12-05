@@ -87,7 +87,7 @@
 
         const isAdmin = 
           user.email === "a0930619084@gmail.com" || 
-          user.email === "d112.212215@yuda.tyc.edu.tw" ||  // ← 你也可以直接加 email
+          user.email.toLowerCase() === "d112.212215@yuda.tyc.edu.tw" ||  // ← 你也可以直接加 email
           (user.displayName && (
             user.displayName.includes("宥晟") || 
             user.displayName.includes("陳宥晟") ||
@@ -153,3 +153,4 @@
 </script>
 </body>
 </html>
+
