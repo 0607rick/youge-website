@@ -74,74 +74,84 @@
 <!-- 這段一定要留！負責讓「限制網站」觸發管理區 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const waitFirebase = setInterval(() => {
+    const wait = setInterval(() => {
       if (!firebase?.apps?.length) return;
-      clearInterval(waitFirebase);
+      clearInterval(wait);
   
       const auth = firebase.auth();
       const db = firebase.firestore();
       const whitelistRef = db.collection("vip-whitelist");
-      const adminPanel = document.getElementById('admin-panel');
+      const panel = document.getElementById('admin-panel');
   
-      // 管理員判斷（你學校信箱永遠第一優先）
+      // 你（宥哥）永遠是管理員
       const isYouGe = (user) => {
         if (!user?.email) return false;
-        const email = user.email.toLowerCase();
-        const name = (user.displayName || "").trim();
-        return email === "d112.212215@yuda.tyc.edu.tw" ||
-               email === "a0930619084@gmail.com" ||
-               name.includes("宥晟") || name.includes("陳宥晟");
+        const e = user.email.toLowerCase();
+        const n = (user.displayName || "").trim();
+        return e === "d112.212215@yuda.tyc.edu.tw" ||
+               e === "a0930619084@gmail.com" ||
+               n.includes("宥晟") || n.includes("陳宥晟");
       };
   
-      // 強制給觸發器
+      // 強制給所有「限制網站」加上觸發器
       const addTrigger = () => {
-        document.querySelectorAll('a[href*="vip.html"]').forEach(link => {
-          link.classList.add('vip-trigger');
-          link.title = "宥哥專屬金光管理區（移過來或點一下）";
+        document.querySelectorAll('a[href*="vip.html"]').forEach(a => {
+          a.classList.add('vip-master-trigger');
         });
       };
-      const timer = setInterval(addTrigger, 300);
-      setTimeout(() => clearInterval(timer), 8000);
+      const t = setInterval(addTrigger, 250);
+      setTimeout(() => clearInterval(t), 10000);
   
-      let hideTimer = null;
+      let stayOpen = false;  // 手動鎖定開啟
   
-      // 滑鼠移入 → 顯示 + 取消自動隱藏
+      // 核心：滑鼠移到觸發器或面板上都算「安全區」
       const showPanel = () => {
-        clearTimeout(hideTimer);
-        adminPanel.classList.add('active');
+        panel.classList.add('active');
       };
   
-      // 滑鼠離開 → 延遲3秒才隱藏（給你足夠時間把滑鼠移到面板上）
-      const hidePanelDelayed = () => {
-        hideTimer = setTimeout(() => {
-          if (!adminPanel.matches(':hover')) {  // 如果滑鼠真的不在面板上才隱藏
-            adminPanel.classList.remove('active');
-          }
-        }, 3000); // 3秒內你都有機會把滑鼠移到金光面板
-      };
-  
-      // 點擊「限制網站」直接鎖定開啟（再點一次關閉）
-      const togglePanel = (e) => {
-        if (e.target.closest('.vip-trigger')) {
-          adminPanel.classList.toggle('active');
-          clearTimeout(hideTimer);
+      const tryHide = () => {
+        if (stayOpen) return; // 手動鎖定就不關
+        // 只有當滑鼠「既不在觸發器上」又「不在面板上」才關
+        if (!document.querySelector('.vip-master-trigger:hover') && !panel.matches(':hover')) {
+          panel.classList.remove('active');
         }
       };
   
-      document.addEventListener('mouseover', e => {
-        if (e.target.closest('.vip-trigger')) showPanel();
+      // 點一下「限制網站」直接鎖定開關（最爽的用法）
+      document.addEventListener('click', e => {
+        if (e.target.closest('.vip-master-trigger')) {
+          stayOpen = !stayOpen;
+          panel.classList.toggle('active', stayOpen);
+          if (stayOpen) {
+            panel.style.pointerEvents = 'auto';
+          }
+        }
       });
-      document.addEventListener('mouseout', e => {
-        if (e.target.closest('.vip-trigger')) hidePanelDelayed();
-      });
-      document.addEventListener('click', togglePanel);
   
-      // ==== 登入判斷 ====
+      // 滑鼠移入觸發器 → 開啟
+      document.addEventListener('mouseenter', e => {
+        if (e.target.closest('.vip-master-trigger')) {
+          showPanel();
+        }
+      });
+  
+      // 滑鼠離開觸發器 → 只有真的離開整個區域才關
+      document.addEventListener('mouseleave', e => {
+        if (e.target.closest('.vip-master-trigger')) {
+          setTimeout(tryHide, 150); // 給你一點緩衝
+        }
+      });
+  
+      // 滑鼠在面板上時永不關閉
+      panel.addEventListener('mouseenter', showPanel);
+      panel.addEventListener('mouseleave', tryHide);
+  
+      // 登入判斷
       auth.onAuthStateChanged(user => {
         if (!user) {
           document.getElementById('lock-screen').style.display = 'block';
           document.getElementById('vip-content').style.display = 'none';
-          adminPanel.classList.remove('active');
+          panel.classList.remove('active');
           return;
         }
   
@@ -150,11 +160,10 @@
           document.getElementById('vip-content').style.display = 'block';
           addTrigger();
           loadWhitelist();
-          console.log("宥哥本尊已上線，金光管理區待命");
         } else {
           whitelistRef.doc(user.email.toLowerCase()).get().then(doc => {
             if (!doc.exists) {
-              alert('還不快去跟宥哥撒嬌求邀請～');
+              alert('快去跟宥哥撒嬌～');
               auth.signOut();
             } else {
               document.getElementById('lock-screen').style.display = 'none';
@@ -164,10 +173,10 @@
         }
       });
   
-      // ==== 白名單功能 ====
+      // 白名單功能（不變）
       window.addEmail = async () => {
         const email = document.getElementById('new-email').value.trim().toLowerCase();
-        if (!email.includes('@')) return alert('Email 怪怪的喔');
+        if (!email.includes('@')) return alert('Email 錯了啦');
         await whitelistRef.doc(email).set({added: new Date()});
         document.getElementById('new-email').value = '';
         alert('已加入：' + email);
@@ -177,13 +186,13 @@
       window.loadWhitelist = async () => {
         const snap = await whitelistRef.orderBy('added', 'desc').get();
         const box = document.getElementById('whitelist');
-        box.innerHTML = snap.empty ? '<p style="color:#ffeb3b;">還沒有人喔～</p>' : '';
+        box.innerHTML = snap.empty ? '<p style="color:#ffeb3b;">還沒有人～</p>' : '';
         snap.forEach(doc => {
           box.innerHTML += `
-            <div style="padding:15px;background:rgba(255,255,255,0.15);margin:10px 0;border-radius:15px;display:flex;justify-content:space-between;align-items:center;font-size:1.4rem;">
+            <div style="padding:16px;background:rgba(255,255,255,0.18);margin:10px 0;border-radius:16px;display:flex;justify-content:space-between;align-items:center;font-size:1.5rem;">
               <span>${doc.id}</span>
-              <button onclick="firebase.firestore().collection('vip-whitelist').doc('${doc.id}').delete().then(loadWhitelist)" 
-                      style="background:#e74c3c;padding:10px 20px;border:none;border-radius:12px;color:white;">移除</button>
+              <button onclick="firebase.firestore().collection('vip-whitelist').doc('${doc.id}').delete().then(loadWhitelist)"
+                      style="background:#c0392b;padding:10px 24px;border:none;border-radius:12px;color:white;font-weight:bold;">移除</button>
             </div>`;
         });
       };
