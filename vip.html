@@ -11,31 +11,25 @@
 
   /* 金光管理區 - 這次用最穩的方式 */
   #admin-panel {
-    position: fixed;
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92%;
-    max-width: 940px;
-    background: linear-gradient(135deg, rgba(255,215,0,0.98), rgba(255,170,0,0.98));
-    border: 7px solid #ffd700;
-    border-top: none;
-    border-radius: 0 0 40px 40px;
-    padding: 3rem 2rem 2.5rem;
-    box-shadow: 0 30px 100px rgba(255,215,0,0.9);
-    z-index: 99999;
-    backdrop-filter: blur(20px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.6s ease;
-    pointer-events: none;
-  }
-  #admin-panel.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-  }
+  display:none;
+  position:fixed;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:900px;
+  background:linear-gradient(135deg,rgba(255,215,0,0.95),rgba(255,150,0,0.95));
+  border:6px solid #ffd93d;
+  border-radius:0 0 32px 32px;
+  padding:2.5rem;
+  box-shadow:0 20px 60px rgba(255,215,0,0.8);
+  z-index:99999;
+  backdrop-filter:blur(15px);
+  animation:slideDown 0.6s ease-out;
+}
+#admin-panel.active {
+  display:block !important;
+}
   #admin-panel h2 {color:#000;font-size:3.2rem;text-align:center;margin-bottom:2rem;text-shadow:0 0 20px #fff;}
 
   #lock-screen, #vip-content {padding:150px 20px;text-align:center;}
@@ -79,34 +73,83 @@
 
 <!-- 這段一定要留！負責讓「限制網站」觸發管理區 -->
 <script>
-  // 等 common.js 把導覽列畫出來後，再綁定事件
-  const startVipTrigger = () => {
-    const link = document.querySelector('a[href="vip.html"], a[href$="vip.html"]');
-    const panel = document.getElementById('admin-panel');
-    if (!link || !panel) return setTimeout(startVipTrigger, 200);
+  document.addEventListener('DOMContentLoaded', () => {
+    const wait = setInterval(() => {
+      if (!firebase?.apps?.length) return;
+      clearInterval(wait);
 
-    link.style.cursor = 'pointer';
-    link.title = '宥哥專屬管理區';
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const whitelistRef = db.collection("vip-whitelist");
 
-    link.addEventListener('mouseenter', () => panel.classList.add('active'));
-    link.addEventListener('mouseleave', () => {
-      setTimeout(() => {
-        if (!panel.matches(':hover')) panel.classList.remove('active');
-      }, 300);
-    });
-    panel.addEventListener('mouseenter', () => panel.classList.add('active'));
-    panel.addEventListener('mouseleave', () => panel.classList.remove('active'));
-  };
-  // 當你登入且是管理員時才啟動
-  firebase.auth().onAuthStateChanged(user => {
-    if (user && (user.email === 'a0930619084@gmail.com' || /宥晟|陳宥晟/.test(user.displayName || ''))) {
-      document.getElementById('lock-screen').style.display = 'none';
-      document.getElementById('vip-content').style.display = 'block';
-      startVipTrigger();
-      if (typeof loadWhitelist === 'function') loadWhitelist();
-    }
+      auth.onAuthStateChanged(user => {
+        if (!user) return;
+
+        const isAdmin = 
+          user.email === "a0930619084@gmail.com" || 
+          user.email === "d112.212215@yuda.tyc.edu.tw" ||  // ← 你也可以直接加 email
+          (user.displayName && (
+            user.displayName.includes("宥晟") || 
+            user.displayName.includes("陳宥晟") ||
+            user.displayName.trim() === "宥晟" ||
+            user.displayName.trim() === "陳宥晟"
+          ));
+
+        if (isAdmin) {
+          document.getElementById('lock-screen').style.display = 'none';
+          document.getElementById('vip-content').style.display = 'block';
+
+          // 關鍵：把導覽列的「限制網站」加上觸發 class
+          const makeVipTrigger = () => {
+            const link = document.querySelector('a[href="vip.html"], a[href$="vip.html"]');
+            if (link) {
+              link.classList.add('vip-trigger');
+              link.style.cursor = 'pointer';
+              link.title = '宥哥專屬管理區（滑鼠移過來試試）';
+              console.log('宥哥專屬觸發器已啟動！'); // 你可以在 Console 看到這行
+            } else if (document.querySelector('#navbar-container')) {
+              setTimeout(makeVipTrigger, 500); // 再等等 navbar 渲染完
+            }
+          };
+          makeVipTrigger();
+
+          loadWhitelist();
+        } else {
+          whitelistRef.doc(user.email.toLowerCase()).get().then(doc => {
+            if (doc.exists) {
+              document.getElementById('lock-screen').style.display = 'none';
+              document.getElementById('vip-content').style.display = 'block';
+            } else {
+              alert('你還沒被加入白名單喔～快去撒嬌求邀請！');
+              auth.signOut();
+            }
+          });
+        }
+      });
+
+      window.addEmail = async function() {
+        const email = document.getElementById('new-email').value.trim().toLowerCase();
+        if (!email.includes('@')) return alert('Email 格式錯誤！');
+        await whitelistRef.doc(email).set({added: new Date()});
+        document.getElementById('new-email').value = '';
+        alert('已加入：' + email);
+        loadWhitelist();
+      };
+
+      window.loadWhitelist = async function() {
+        const snap = await whitelistRef.get();
+        const list = document.getElementById('whitelist');
+        list.innerHTML = snap.empty ? '<p style="color:#ffeb3b;">目前還沒有人喔～</p>' : '';
+        snap.forEach(doc => {
+          list.innerHTML += `<div style="padding:12px;background:rgba(255,255,255,0.2);margin:10px 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span>${doc.id}</span>
+            <button onclick="whitelistRef.doc('${doc.id}').delete().then(loadWhitelist)" 
+                    style="background:#e74c3c;color:white;border:none;padding:8px 16px;border-radius:10px;cursor:pointer;">移除</button>
+          </div>`;
+        });
+      };
+    }, 100);
   });
 </script>
-
 </body>
 </html>
