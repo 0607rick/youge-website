@@ -74,82 +74,126 @@
 <!-- 這段一定要留！負責讓「限制網站」觸發管理區 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const wait = setInterval(() => {
+    const waitFirebase = setInterval(() => {
       if (!firebase?.apps?.length) return;
-      clearInterval(wait);
-
+      clearInterval(waitFirebase);
+  
       const auth = firebase.auth();
       const db = firebase.firestore();
       const whitelistRef = db.collection("vip-whitelist");
-
+  
+      // 加強版管理員判斷（把你學校信箱寫死第一優先）
+      const isYouGeAdmin = (user) => {
+        if (!user || !user.email) return false;
+        const email = user.email.toLowerCase();
+        const name = (user.displayName || "").trim();
+  
+        return email === "a0930619084@gmail.com" ||
+               email === "d112.212215@yuda.tyc.edu.tw" ||
+               email === "d112.212215@yuda.tyc.edu.tw".toLowerCase() || // 保險
+               name.includes("宥晟") || 
+               name.includes("陳宥晟") ||
+               name === "宥晟" || 
+               name === "陳宥晟";
+      };
+  
+      // 強制加上觸發功能（不管 navbar 什麼時候渲染好都一定會加上）
+      const enableVipTrigger = () => {
+        const links = document.querySelectorAll('a[href="vip.html"], a[href$="/vip.html"], a[href="./vip.html"], a[href="../vip.html"]');
+        links.forEach(link => {
+          link.classList.add('vip-trigger');
+          link.title = "點我或滑鼠移過來 → 宥哥專屬金光管理區";
+          link.style.cursor = "pointer";
+        });
+      };
+  
+      // 每 300ms 檢查一次，直到加上為止
+      const forceEnable = setInterval(enableVipTrigger, 300);
+      setTimeout(() => clearInterval(forceEnable), 10000); // 最多等 10 秒
+  
       auth.onAuthStateChanged(user => {
-        if (!user) return;
-
-        const isAdmin = 
-          user.email === "a0930619084@gmail.com" || 
-          user.email.toLowerCase() === "d112.212215@yuda.tyc.edu.tw" ||  // ← 你也可以直接加 email
-          (user.displayName && (
-            user.displayName.includes("宥晟") || 
-            user.displayName.includes("陳宥晟") ||
-            user.displayName.trim() === "宥晟" ||
-            user.displayName.trim() === "陳宥晟"
-          ));
-
-        if (isAdmin) {
+        if (!user) {
+          document.getElementById('vip-content').style.display = 'none';
+          document.getElementById('lock-screen').style.display = 'block';
+          document.getElementById('admin-panel').classList.remove('active');
+          return;
+        }
+  
+        if (isYouGeAdmin(user)) {
+          // 你就是宥哥本人！
           document.getElementById('lock-screen').style.display = 'none';
           document.getElementById('vip-content').style.display = 'block';
-
-          // 關鍵：把導覽列的「限制網站」加上觸發 class
-          const makeVipTrigger = () => {
-            const link = document.querySelector('a[href="vip.html"], a[href$="vip.html"]');
-            if (link) {
-              link.classList.add('vip-trigger');
-              link.style.cursor = 'pointer';
-              link.title = '宥哥專屬管理區（滑鼠移過來試試）';
-              console.log('宥哥專屬觸發器已啟動！'); // 你可以在 Console 看到這行
-            } else if (document.querySelector('#navbar-container')) {
-              setTimeout(makeVipTrigger, 500); // 再等等 navbar 渲染完
-            }
-          };
-          makeVipTrigger();
-
+  
+          // 強制啟動管理區觸發器
+          enableVipTrigger();
+  
+          // 載入白名單
           loadWhitelist();
+  
+          console.log("宥哥駕到！金光管理區已啟動✨");
         } else {
+          // 一般使用者：檢查有沒有在白名單
           whitelistRef.doc(user.email.toLowerCase()).get().then(doc => {
             if (doc.exists) {
               document.getElementById('lock-screen').style.display = 'none';
               document.getElementById('vip-content').style.display = 'block';
             } else {
-              alert('你還沒被加入白名單喔～快去撒嬌求邀請！');
+              alert('你還沒被宥哥加入白名單喔～快去撒嬌！');
               auth.signOut();
             }
           });
         }
       });
-
-      window.addEmail = async function() {
+  
+      window.addEmail = async () => {
         const email = document.getElementById('new-email').value.trim().toLowerCase();
-        if (!email.includes('@')) return alert('Email 格式錯誤！');
-        await whitelistRef.doc(email).set({added: new Date()});
+        if (!email || !email.includes('@')) return alert('請輸入正確 Email！');
+        await whitelistRef.doc(email).set({ added: new Date(), by: auth.currentUser?.email });
         document.getElementById('new-email').value = '';
-        alert('已加入：' + email);
+        alert('已加入白名單：' + email);
         loadWhitelist();
       };
-
-      window.loadWhitelist = async function() {
-        const snap = await whitelistRef.get();
-        const list = document.getElementById('whitelist');
-        list.innerHTML = snap.empty ? '<p style="color:#ffeb3b;">目前還沒有人喔～</p>' : '';
+  
+      window.loadWhitelist = async () => {
+        const snap = await whitelistRef.orderBy('added', 'desc').get();
+        const container = document.getElementById('whitelist');
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:#ffeb3b;">白名單空空的～</p>';
+          return;
+        }
+        container.innerHTML = '';
         snap.forEach(doc => {
-          list.innerHTML += `<div style="padding:12px;background:rgba(255,255,255,0.2);margin:10px 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
-            <span>${doc.id}</span>
-            <button onclick="whitelistRef.doc('${doc.id}').delete().then(loadWhitelist)" 
-                    style="background:#e74c3c;color:white;border:none;padding:8px 16px;border-radius:10px;cursor:pointer;">移除</button>
-          </div>`;
+          const div = document.createElement('div');
+          div.style = "padding:15px;background:rgba(255,255,255,0.15);margin:12px 0;border-radius:15px;display:flex;justify-content:space-between;align-items:center;";
+          div.innerHTML = `
+            <span style="font-size:1.4rem;">${doc.id}</span>
+            <button onclick="firebase.firestore().collection('vip-whitelist').doc('${doc.id}').delete().then(loadWhitelist)" 
+                    style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:12px;">移除</button>
+          `;
+          container.appendChild(div);
         });
       };
+  
     }, 100);
   });
-</script>
+  
+  // 滑鼠移入移出顯示管理面板（最穩寫法）
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('.vip-trigger')) {
+      document.getElementById('admin-panel').classList.add('active');
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget || !e.target.closest('.vip-trigger')) {
+      document.getElementById('admin-panel').classList.remove('active');
+    }
+  });
+  // 點擊也行
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.vip-trigger')) {
+      document.getElementById('admin-panel').classList.toggle('active');
+    }
+  });
+  </script>
 </body>
 </html>
