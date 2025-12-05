@@ -46,7 +46,7 @@
     </button>
   </div>
   <div id="whitelist" style="max-height:55vh;overflow-y:auto;background:rgba(0,0,0,0.7);padding:30px;border-radius:20px;"></div>
-  <p style="text-align:center;margin-top:25px;color:#ffeb3b;font-size:1.3rem;">滑鼠移開 0.8 秒後自動隱藏</p>
+  <p style="text-align:center;margin-top:25px;color:#ffeb3b;font-size:1.3rem;">滑鼠移開 0.5 秒後自動隱藏</p>
 </div>
 
 <div id="lock-screen">
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(hideTimer);
       hideTimer = setTimeout(() => {
         panel.classList.remove('active');
-      }, 800); // 0.8 秒延遲，讓你有充足時間把滑鼠移到面板上
+      }, 500); // 0.8 秒延遲，讓你有充足時間把滑鼠移到面板上
     };
 
     // 為「限制網站」加上觸發器
