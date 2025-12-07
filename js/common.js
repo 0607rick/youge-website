@@ -54,8 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // 強制先渲染一次（未登入狀態）
-  renderNavbar(null);
 
   // 關鍵修復：用 setTimeout 強制等 Firebase 真的準備好
   const tryRender = () => {
