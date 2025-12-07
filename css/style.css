@@ -9,6 +9,15 @@ body {
   padding-top: 10px; /* 給固定導覽列留空間 */
 }
 
+
+.admin-control {
+  min-width: 180px;     /* 預留足夠寬度 */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+
 /* ===== 宥哥宇宙 LOGO 完美圓角版（2025.12.07 更新）===== */
 .logo-text-with-icon {
   display: flex;

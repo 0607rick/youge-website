@@ -12,29 +12,38 @@
 </head>
 <body>
   <!-- 永不消失的導覽列骨架（超重要！）-->
-<div id="navbar-container">
-  <nav class="navbar" id="navbar-skeleton">
-    <div class="logo-text-with-icon" style="opacity:0.6;">
-      <span style="font-size:2rem;font-weight:900;color:white;">宥哥</span>
-      <div style="width:56px;height:56px;border-radius:20px;background:#ffffff44;"></div>
-    </div>
-    
-    <ul class="nav-links" style="opacity:0.4;">
-      <li><a>首頁</a></li>
-      <li><a>關於我</a></li>
-      <li><a>作品集</a></li>
-      <li><a>文章</a></li>
-      <li><a>留言板</a></li>
-      <li><a style="background:rgba(255,71,87,0.3);padding:0.75rem 1.9rem;border-radius:50px;">限制網站</a></li>
-    </ul>
-
-    <div class="admin-control">
-      <span style="color:white;">Loading...</span>
-    </div>
-
-    <div class="hamburger">Menu</div>
-  </nav>
-</div>
+  <div id="navbar-container">
+    <nav class="navbar" id="navbar-skeleton" style="opacity:0.7; pointer-events:none;">
+      <div class="logo-text-with-icon">
+        <span style="font-size:2rem;font-weight:900;color:white;">宥哥</span>
+        <div style="width:56px;height:56px;border-radius:20px;background:#ffffff55;"></div>
+      </div>
+      <ul class="nav-links">
+        <li><a>首頁</a></li>
+        <li><a>關於我</a></li>
+        <li><a>作品集</a></li>
+        <li><a>文章</a></li>
+        <li><a>留言板</a></li>
+        <li><a style="color:#ff4757;background:rgba(255,71,87,0.3);padding:0.75rem 1.9rem;border-radius:50px;">限制網站</a></li>
+      </ul>
+      <div class="admin-control">
+        <!-- 預設顯示 loading -->
+        <span class="auth-placeholder" style="color:white;font-weight:600;opacity:0.7;">Loading...</span>
+        
+        <!-- 登入後會顯示這個（先隱藏） -->
+        <div class="auth-logged-in" style="display:none;align-items:center;gap:1rem;">
+          <span style="color:white;font-weight:600;">Hi, 宥哥</span>
+          <button class="admin-btn">登出</button>
+        </div>
+        
+        <!-- 未登入會顯示這個（先隱藏） -->
+        <div class="auth-logged-out" style="display:none;">
+          <button class="admin-btn">登入</button>
+        </div>
+      </div>
+      <div class="hamburger">Menu</div>
+    </nav>
+  </div>
 
   <main>
     <!-- 全螢幕英雄區 -->
