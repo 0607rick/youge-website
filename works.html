@@ -14,7 +14,16 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <div id="navbar-container"></div>
+  <div id="navbar-container">
+    <!-- 預載一個假的導覽列，避免閃白 -->
+    <nav class="navbar" style="opacity:0.6;pointer-events:none;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span style="font-size:2rem;font-weight:900;color:white;">宥哥</span>
+        <div style="width:48px;height:48px;border-radius:50%;background:#ffffff33;"></div>
+      </div>
+      <div style="color:white;font-weight:600;">Loading...</div>
+    </nav>
+  </div>
 
   <!-- 作品集主內容 -->
   <main class="portfolio-page">

@@ -1,4 +1,4 @@
-// js/common.js → 宥哥宇宙 2025.12.04 最終無敵版（專治「登入後還是顯示登入」）
+// js/common.js → 2025.12.07 最終永不閃爍版
 document.addEventListener('DOMContentLoaded', () => {
   const basePath = location.pathname.includes('/articles/') ? '../' : './';
 
@@ -12,9 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const auth = firebase.auth();
-  const db = firebase.firestore();
 
-  // 渲染導覽列（重點修復版）
   const renderNavbar = (user) => {
     const displayName = user?.displayName || user?.email?.split('@')[0] || '訪客';
     const isLoggedIn = !!user;
@@ -23,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <nav class="navbar">
         <div class="logo-text-with-icon" onclick="location.href='${basePath}index.html'" style="cursor:pointer;display:flex;align-items:center;gap:14px;">
           <span style="font-size:2rem;font-weight:900;color:white;">宥哥</span>
-          <img src="${basePath}assets/images/logo.png" alt="LOGO" style="width:48px;height:48px;border-radius:50%;">
+          <img src="${basePath}assets/images/logo.png" alt="LOGO" style="width:56px;height:56px;border-radius:20px;border:3px solid rgba(255,255,255,0.3);box-shadow:0 4px 15px rgba(0,0,0,0.25);">
         </div>
 
         <ul class="nav-links">
@@ -36,11 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
 
         <div class="admin-control">
-          ${isLoggedIn ? 
-            `<span style="color:white;margin-right:1rem;font-weight:600;">Hi, ${displayName}</span>
-             <button class="admin-btn" onclick="firebase.auth().signOut()">登出</button>` 
-            : 
-            `<button class="admin-btn" onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())">登入</button>`
+          ${isLoggedIn 
+            ? `<span style="color:white;margin-right:1rem;font-weight:600;">Hi, ${displayName}</span>
+               <button class="admin-btn" onclick="firebase.auth().signOut().then(()=>location.reload())">登出</button>`
+            : `<button class="admin-btn" onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())">登入</button>`
           }
         </div>
 
@@ -48,38 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
       </nav>
     `;
 
-    // 手機選單
     document.querySelector('.hamburger')?.addEventListener('click', () => {
       document.querySelector('.nav-links').classList.toggle('active');
     });
   };
 
-
-  // 關鍵修復：用 setTimeout 強制等 Firebase 真的準備好
-  const tryRender = () => {
-    const user = auth.currentUser;
-    if (user) {
-      renderNavbar(user);
-      console.log('強制更新成功：', user.email);
-    } else {
-      // 還沒準備好？再等 500ms
-      setTimeout(tryRender, 500);
-    }
-  };
-
-  // 主要監聽（這行一定要有！）
+  // 唯一正確的寫法：只靠這一行，等 Firebase 準備好再畫！
   auth.onAuthStateChanged(user => {
-    console.log('onAuthStateChanged 觸發：', user ? user.email : '未登入');
     renderNavbar(user);
   });
 
-  // 登出按鈕加上強制刷新
-  window.signOutAndReload = () => {
-    auth.signOut().then(() => location.reload());
-  };
-
-  // 保險起見：最多等 5 秒強制更新一次
-  setTimeout(tryRender, 1000);
-  setTimeout(tryRender, 3000);
-  setTimeout(tryRender, 5000);
+  // 全部刪掉以下這些保險招數！！
+  // renderNavbar(null);
+  // setTimeout(tryRender, xxx);
+  // 全部刪！
 });
