@@ -1,105 +1,76 @@
-宥哥，直接給你「一次解決所有文章內頁」的終極母版！
-你現在看到的亂掉 100% 就是因為：
-
-href="css/style.css" → 路徑錯了（應該是 ../css/style.css）
-沒有 padding-top → 標題被導覽列蓋住
-沒有內嵌 CSS → 手機排版爆炸
-
-現在把你 articles/article2.html（還有所有 articleX.html）全部換成下面這段就完結！
-HTML<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>貓咪攝影 5 個秘訣 - 宥哥宇宙</title>
+  <title>貓咪攝影 5 個秘訣</title>
 
-  <!-- 關鍵 1：路徑改成 ../ -->
+  <!-- 路徑正確（在 articles/ 資料夾內） -->
   <link rel="stylesheet" href="../css/style.css">
-
-  <!-- 關鍵 2：文章內頁專用完美 CSS（直接內嵌，永不亂） -->
-  <style>
-    .article-content {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-      line-height: 1.9;
-      font-size: 1.18rem;
-      color: #222;
-    }
-    .article-content h1 {
-      font-size: 2.6rem;
-      text-align: center;
-      margin: 0 0 0.5rem;
-      color: #6e8efb;
-    }
-    .article-content small {
-      display: block;
-      text-align: center;
-      color: #999;
-      font-size: 1rem;
-      margin-bottom: 2.5rem;
-    }
-    .article-content img {
-      width: 100%;
-      height: auto;
-      border-radius: 18px;
-      margin: 2.5rem 0;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
-    }
-    .article-content ol {
-      padding-left: 1.5rem;
-      margin: 2rem 0;
-    }
-    .article-content li {
-      margin: 1rem 0;
-      padding-left: 0.5rem;
-    }
-    .back-link {
-      display: inline-block;
-      margin: 2rem 0 1rem;
-      color: #6e8efb;
-      font-weight: 600;
-      font-size: 1.1rem;
-      text-decoration: none;
-    }
-    .back-link:hover { text-decoration: underline; }
-
-    /* 手機完美 */
-    @media (max-width: 768px) {
-      .article-content {
-        padding: 1.5rem 1rem;
-        font-size: 1.12rem;
-      }
-      .article-content h1 { font-size: 2.2rem; }
-    }
-  </style>
-
+  <link rel="icon" href="./assets/images/logo.png" type="image/png">
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
   <div id="navbar-container"></div>
 
-  <!-- 關鍵 3：加 padding-top 讓標題不被導覽列蓋住 -->
-  <main class="content" style="padding-top:100px;">
-    <div class="article-content">
-      <a href="index.html" class="back-link">← 回文章列表</a>
-      <h1>貓咪攝影 5 個秘訣</h1>
-      <p><small>2025年11月15日</small></p>
-      
-      <img src="../assets/images/article2.jpg" alt="貓咪攝影">
-      
-      <p>讓貓咪自然入鏡不怕生，這裡有 5 個超實用技巧！</p>
-      
-      <ol>
-        <li><strong>用零食引誘，保持距離</strong>：不要靠太近，否則貓咪會跑光光</li>
-        <li><strong>蹲下身高，進入貓咪視角</strong>：這樣拍出來才不會有壓迫感</li>
-        <li><strong>連拍模式，抓住瞬間</strong>：貓咪動作超快，一秒 10 連拍才夠</li>
-        <li><strong>自然光優先，避免閃光</strong>：閃光會嚇到貓，還會紅眼</li>
-        <li><strong>後製加柔焦，夢幻感 +100</strong>：輕輕一抹，秒變仙境貓</li>
-      </ol>
+  <!-- 全新統一風格單篇文章頁面 -->
+  <main class="article-single-page">
+    <div class="container">
+
+      <!-- 標題區 -->
+      <div class="article-header">
+        <a href="index.html" class="back-btn">← 回文章列表</a>
+        <h1>貓咪攝影 5 個秘訣</h1>
+        <p class="meta">2025 年 11 月 15 日　<span class="tag">貓咪</span></p>
+      </div>
+
+      <!-- 封面大圖 -->
+      <div class="article-cover">
+        <img src="../assets/images/article2.jpg" alt="貓咪攝影">
+      </div>
+
+      <!-- 內容主卡片（跟關於我、作品集同款懸浮白卡！） -->
+      <article class="article-card-single">
+        <div class="article-body">
+
+          <p class="lead">讓貓咪自然入鏡不怕生，這裡有 5 個超實用技巧！</p>
+
+          <ol class="styled-list">
+            <li>
+              <strong>用零食引誘，保持距離</strong><br>
+              不要靠太近，否則貓咪會跑光光。用逗貓棒或零食遠距離引導才是王道。
+            </li>
+            <li>
+              <strong>蹲下身高，進入貓咪視角</strong><br>
+              這樣拍出來才不會有壓迫感，貓咪看起來也更親人一百倍！
+            </li>
+            <li>
+              <strong>連拍模式，抓住瞬間</strong><br>
+              貓咪動作超快，一秒 10 連拍才夠，回家再慢慢挑。
+            </li>
+            <li>
+              <strong>自然光優先，避免閃光</strong><br>
+              閃光會嚇到貓，還會紅眼，窗邊自然光才是貓咪最美的打光。
+            </li>
+            <li>
+              <strong>後製加柔焦，夢幻感 +100</strong><br>
+              Lightroom 輕輕拉高「清晰度 -20」＋「柔焦」，秒變仙境貓。
+            </li>
+          </ol>
+
+          <blockquote>
+            「拍貓最大的秘訣，就是把相機當成不存在。」<br>
+            —— 宥哥（專業貓奴十年）
+          </blockquote>
+
+          <p>下次拍你家主子，記得試試這五招，保證社群洗版！</p>
+
+        </div>
+      </article>
+
     </div>
   </main>
 

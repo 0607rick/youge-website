@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>宥哥宇宙</title>
+  <title>宥哥故事館</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
@@ -12,12 +12,30 @@
 <body>
   <div id="navbar-container"></div>
 
-  <main class="content">
-    <div class="card">
-      <h1>歡迎來到宥哥宇宙！</h1>
-      <p>這裡是宥哥的個人網站，分享生活、創作與快樂能量～</p>
-      <p>滑鼠移到右上角「限制網站」有驚喜喔（只有宥哥看得見）</p>
-    </div>
+  <main>
+    <!-- 全螢幕英雄區 -->
+    <section class="hero-full">
+      <div class="hero-overlay"></div>
+      
+      <!-- 換成你自己的背景圖！建議尺寸 1920x1080 以上 -->
+      <div class="hero-background" style="background-image: url('assets/images/background.png');"></div>
+      
+      <div class="hero-content">
+        <h1>歡迎來到 <span>宥哥故事館</span></h1>
+        <p>分享生活、技術、旅行、攝影與滿滿的快樂能量</p>
+        <div class="hero-buttons">
+          <a href="#articles" class="btn-primary">看最新文章</a>
+          <a href="#about" class="btn-secondary">關於宥哥</a>
+        </div>
+        <p class="scroll-hint">↓ 往下滑看更多內容 ↓</p>
+      </div>
+    </section>
+
+    <!-- 你原本的內容可以接在这里（例如文章列表、關於我之類） -->
+    <section class="container" style="padding: 80px 20px; text-align: center;">
+      <h2>這裡開始放你後續的內容～</h2>
+      <p>例如最新文章、作品集、旅遊足跡都可以放下面</p>
+    </section>
   </main>
 
   <!-- 只留這一行！全部交給 common.js 處理 -->

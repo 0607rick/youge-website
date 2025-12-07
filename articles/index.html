@@ -3,66 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>文章專區 - 宥哥宇宙</title>
+  <title>文章專區</title>
+
+  <!-- 因為現在在 articles/ 資料夾裡，所以路徑要往上跳一層 -->
   <link rel="stylesheet" href="../css/style.css">
-
-  <!-- 專門給文章列表的完美 CSS（直接內嵌，永不亂！） -->
-  <style>
-    .articles-container {
-      max-width: 1200px;
-      margin: 2rem auto; padding: 0 1rem;
-    }
-    .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-    .article-item {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      transition: all 0.4s ease;
-      text-decoration: none;
-      color: inherit;
-    }
-    .article-item:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(107,79,255,0.25);
-    }
-    .article-item img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .article-item .info {
-      padding: 1.5rem;
-      text-align: center;
-    }
-    .article-item h3 {
-      margin: 0 0 0.8rem 0;
-      font-size: 1.35rem;
-      color: #333;
-      line-height: 1.4;
-    }
-    .article-item p {
-      margin: 0;
-      color: #888;
-      font-size: 0.95rem;
-    }
-
-    /* 手機優化 */
-    @media (max-width: 768px) {
-      .articles-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0;
-      }
-      .article-item img { height: 180px; }
-    }
-  </style>
-
+  <link rel="icon" href="./assets/images/logo.png" type="image/png">
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -70,27 +16,41 @@
 <body>
   <div id="navbar-container"></div>
 
-  <main class="content" style="padding-top:100px;">
-    <div class="articles-container">
-      <h1 style="text-align:center;font-size:2.8rem;margin-bottom:1rem;color:#6e8efb;">文章專區</h1>
-      <div id="articles-list" class="articles-grid"></div>
+  <main class="articles-page">
+    <div class="page-title">
+      <h1>文章專區</h1>
+      <p class="subtitle">攝影教學、生活隨筆、程式心得、貓咪日常，通通在這裡</p>
+    </div>
+
+    <div class="articles-grid" id="articlesGrid">
+      <!-- JS 自動生成 -->
     </div>
   </main>
 
   <script src="../js/common.js"></script>
   <script>
+    // 文章資料（之後新增文章只要在這裡加一行就好！）
     const articles = [
-      { title: "如何拍出電影感人像", date: "2025-11-17", file: "article1.html", img: "../assets/images/article1.jpg" },
-      { title: "貓咪攝影 5 個秘訣", date: "2025-11-15", file: "article2.html", img: "../assets/images/article2.jpg" },
-      // 之後想加文章直接在這邊加就行
+      { title: "如何拍出電影感人像",      date: "2025-11-17", tags: "攝影",   img: "../assets/images/article1.jpg", link: "article1.html" },
+      { title: "貓咪攝影 5 個秘訣",         date: "2025-11-15", tags: "貓咪",   img: "../assets/images/article2.jpg", link: "article2.html" },
+      { title: "2025 年前端趨勢總整理",     date: "2025-11-10", tags: "技術",   img: "../assets/images/article3.jpg", link: "article3.html" },
+      { title: "京都紅葉這樣拍最美",       date: "2025-10-28", tags: "旅行",   img: "../assets/images/article4.jpg", link: "article4.html" },
+      { title: "手機拍出單眼質感技巧",     date: "2025-10-20", tags: "攝影",   img: "../assets/images/article5.jpg", link: "article5.html" },
+      { title: "我家主子的一天",           date: "2025-10-15", tags: "貓咪",   img: "../assets/images/article6.jpg", link: "article6.html" },
+      // 繼續加 ↓
     ];
 
-    document.getElementById('articles-list').innerHTML = articles.map(a => `
-      <a href="${a.file}" class="article-item">
-        <img src="${a.img}" alt="${a.title}">
-        <div class="info">
-          <h3>${a.title}</h3>
-          <p><small>${a.date}</small></p>
+    const grid = document.getElementById('articlesGrid');
+
+    grid.innerHTML = articles.map(article => `
+      <a href="${article.link}" class="article-card">
+        <div class="img-wrapper">
+          <img src="${article.img}" alt="${article.title}" loading="lazy">
+          <span class="tag">${article.tags}</span>
+        </div>
+        <div class="card-info">
+          <h3>${article.title}</h3>
+          <p class="date">${article.date}</p>
         </div>
       </a>
     `).join('');

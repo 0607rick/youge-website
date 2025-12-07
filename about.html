@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>關於宥哥</title>
+  <title>關於我</title>
+  <link rel="icon" href="./assets/images/logo.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
@@ -11,19 +12,53 @@
 </head>
 <body>
   <div id="navbar-container"></div>
-  <main class="content">
-    <div class="card">
+
+  <main class="about-page">
+    <!-- 大標題 -->
+    <div class="page-title">
       <h1>關於宥哥</h1>
-      <p>嗨！我是宥哥，熱愛攝影、程式與分享生活。</p>
-      <p>希望我的作品能帶給你微笑！</p>
-      <div style="margin-top:1rem;">
-        <span class="tag">攝影</span>
-        <span class="tag">前端開發</span>
-        <span class="tag">咖啡鑑賞</span>
-        <span class="tag">貓奴</span>
+      <p class="subtitle">一個愛拍照、寫程式、喝咖啡、吸貓的普通人類</p>
+    </div>
+
+    <!-- 卡片群（格子外面那種感覺） -->
+    <div class="about-grid">
+      <!-- 自我介紹卡 -->
+      <div class="about-card">
+        <div class="card-icon">Person</div>
+        <h3>我是誰</h3>
+        <p>大家好，我是宥哥<br>前端工程師 × 業餘攝影師 × 專業貓奴</p>
+      </div>
+
+      <!-- 興趣卡 -->
+      <div class="about-card">
+        <div class="card-icon">Camera</div>
+        <h3>熱愛攝影</h3>
+        <p>喜歡用鏡頭記錄生活<br>街拍、人像、風景、夜景通通來者不拒</p>
+      </div>
+
+      <!-- 技能卡 -->
+      <div class="about-card">
+        <div class="card-icon">Code</div>
+        <h3>前端開發</h3>
+        <p>HTML / CSS / JavaScript / React / Vue<br>最愛把設計稿變成會呼吸的網頁</p>
+      </div>
+
+      <!-- 生活卡 -->
+      <div class="about-card">
+        <div class="card-icon">Coffee</div>
+        <h3>日常小事</h3>
+        <p>每天一杯手沖咖啡<br>週末不是在咖啡廳，就是在去咖啡廳的路上</p>
       </div>
     </div>
+
+    <!-- 社群連結（可選） -->
+    <div class="social-links" style="text-align:center; margin-top: 4rem;">
+      <a href="#" class="social-btn">Instagram</a>
+      <a href="#" class="social-btn">GitHub</a>
+      <a href="#" class="social-btn">Email</a>
+    </div>
   </main>
+
   <script src="js/common.js"></script>
 </body>
 </html>
