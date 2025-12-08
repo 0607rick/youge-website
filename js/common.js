@@ -41,7 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         </div>
 
-        <div class="hamburger">Menu</div>
+        <!-- 三條線漢堡圖示 -->
+        <div class="hamburger" id="hamburgerBtn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </nav>
     `;
 
