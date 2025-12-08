@@ -1069,3 +1069,106 @@ body {
 @media (min-width: 769px) {
   .hamburger { display: none; }
 }
+
+/* 修改手機版導覽列 */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* 隱藏原有水平滾動選單 */
+  }
+
+  .admin-control {
+    display: none; /* 隱藏電腦版登入 */
+  }
+
+  .hamburger {
+    display: flex; /* 顯示三條線 */
+  }
+}
+
+/* 側邊滑出選單樣式 (調整為從右邊滑出，像截圖) */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
+.mobile-menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.mobile-menu-sidebar {
+  position: fixed;
+  top: 0; right: -280px; /* 初始隱藏在右邊 */
+  width: 280px;
+  height: 100%;
+  background: #1a1a1a; /* 深色背景，像截圖 */
+  padding: 2rem 1.5rem;
+  transition: right 0.4s ease;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.5); /* 左邊陰影 */
+}
+.mobile-menu-overlay.active .mobile-menu-sidebar {
+  right: 0;
+}
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+.close-menu {
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: #aaa;
+}
+.close-menu:hover { color: white; }
+.mobile-menu-links {
+  list-style: none;
+}
+.mobile-menu-links li {
+  margin: 1.5rem 0;
+}
+.mobile-menu-links a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 1.35rem;
+  font-weight: 500;
+  display: block;
+  padding: 0.5rem 0;
+  transition: all 0.3s;
+}
+.mobile-menu-links a:hover {
+  color: white;
+  padding-left: 10px; /* hover 向右移，像截圖列表 */
+}
+
+/* 匹配截圖垂直列表風格，添加箭頭 */
+.mobile-menu-links a::after {
+  content: ' >';
+  color: #666;
+  margin-left: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.mobile-menu-links a:hover::after {
+  opacity: 1;
+}
+
+/* 登入區塊樣式 */
+.mobile-admin-control .admin-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.mobile-admin-control .admin-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
