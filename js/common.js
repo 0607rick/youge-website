@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <li><a href="${basePath}announcement.html">最新公告</a></li>
           <li><a href="${basePath}articles/index.html">文章</a></li>
           <li><a href="${basePath}guestbook.html">留言板</a></li>
-          <li><a href="${basePath}vip.html" style="color:#ff4757;font-weight:bold;background:rgba(255,71,87,0.25);padding:0.75rem 1.9rem;border-radius:50px;">限制網站</a></li>
+          <li><a href="${basePath}vip.html" style="color:#ff0000;font-weight:bold;background:rgba(255,71,87,0.25);padding:0.75rem 1.9rem;border-radius:50px;">限制網站</a></li>
         </ul>
 
         <div class="admin-control desktop-only">

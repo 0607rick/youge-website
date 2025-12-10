@@ -56,8 +56,9 @@
   </div>
 
   <div id="lock-screen">
-    <h1 style="font-size:5rem;">此頁面僅限宥哥親自邀請的人進入</h1>
-    <p style="font-size:2.4rem;color:#ff6b6b;">想要進來嗎？快去跟宥哥撒嬌求邀請～</p>
+    <p style="font-size:6rem;color:#33ff00;">此網頁正在架設中⋯⋯敬請期待</p>
+    <h1 style="margin-top:100px;font-size:4.5rem;">此頁面只有宥哥親自加入白名單的人才能加入</h1>
+    <p style="font-size:2.4rem;color:#ff6b6b;">想要進來嗎？快點擊底下的按鈕加入申請～</p>
     <button style="margin-top:80px;padding:25px 100px;font-size:2rem;background:#fff;color:#000;border:none;border-radius:50px;cursor:pointer;"
             onclick="firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())">
       Google 登入
@@ -65,10 +66,10 @@
   </div>
 
   <div id="vip-content">
-    <h1 style="font-size:5.8rem;">歡迎來到宥哥的秘密宇宙</h1>
-    <p style="font-size:2.8rem;">這裡只有被我親自邀請的人才看得到喔～</p>
+    <h1 style="font-size:5.8rem;">歡迎來到男孩之間的秘密</h1>
+    <p style="font-size:2.8rem;">請勿將此內容對外公開，如被發現一律依法送辦</p>
     <p style="color:#ffd700;font-size:4.5rem;margin-top:120px;text-shadow:0 0 60px #ffd700;">
-      永遠愛你一個人的宥哥
+      網站架設中⋯⋯敬請期待♡
     </p>
   </div>
 
@@ -103,8 +104,7 @@
       const isYouGe = (user) => {
         if (!user?.email) return false;
         const email = user.email.toLowerCase();
-        return email === "d112.212215@yuda.tyc.edu.tw" ||
-              email === "a0930619084@gmail.com";
+        return email === "a0930619084@gmail.com" ;
       };
 
       // 管理面板顯示/延遲隱藏

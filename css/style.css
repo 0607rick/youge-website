@@ -440,15 +440,15 @@ body {
 }
 
 .about-card h3 {
-  font-size: 1.5rem;
+  font-size: 3rem;
   margin: 1rem 0;
-  color: #2c3e50;
+  color: #ff00e6;
 }
 
 .about-card p {
-  color: #555;
+  color: #00bfff;
   line-height: 1.7;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .social-btn {
