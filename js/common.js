@@ -1,4 +1,4 @@
-// js/common.js → 2025.12.07 最終永不閃爍版
+// js/common.js → 2025.12.11 最終完美版（背景不滾動 + 返回鍵支援）
 document.addEventListener('DOMContentLoaded', () => {
   const basePath = location.pathname.includes('/articles/') ? '../' : './';
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mobile-menu-sidebar">
           <div class="mobile-menu-header">
             <span style="color:white;font-size:1.8rem;font-weight:600;">選單</span>
-            <span class="close-menu">&times;</span>
+            <span class="close-menu">×</span>
           </div>
           <ul class="mobile-menu-links">
             <li><a href="${basePath}index.html">首頁</a></li>
@@ -73,26 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    // 手機漢堡點擊事件
+    // ===== 重點：手機選單開關 + 鎖定背景滾動 =====
     const hamburger = document.querySelector('.hamburger');
     const overlay = document.querySelector('.mobile-menu-overlay');
     const closeBtn = document.querySelector('.close-menu');
 
-    hamburger?.addEventListener('click', () => {
+    const openMenu = () => {
       overlay.classList.add('active');
-    });
+      document.body.style.overflow = 'hidden';  // 鎖住背景滾動
+    };
 
-    closeBtn?.addEventListener('click', () => {
+    const closeMenu = () => {
       overlay.classList.remove('active');
+      document.body.style.overflow = '';         // 恢復滾動
+    };
+
+    hamburger?.addEventListener('click', openMenu);
+    closeBtn?.addEventListener('click', closeMenu);
+    
+    // 點擊灰色背景關閉
+    overlay?.addEventListener('click', (e) => {
+      if (e.target === overlay) closeMenu();
     });
 
-    overlay?.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-        overlay.classList.remove('active');
+    // 超讚加分項：手機按返回鍵也能關閉選單
+    window.addEventListener('popstate', () => {
+      if (overlay.classList.contains('active')) {
+        closeMenu();
       }
     });
   };
 
+  // Firebase 登入狀態監聽
   auth.onAuthStateChanged(user => {
     renderNavbar(user);
   });
