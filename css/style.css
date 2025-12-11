@@ -1172,3 +1172,39 @@ body {
 .mobile-admin-control .admin-btn:hover {
   background: rgba(255,255,255,0.2);
 }
+
+/* 手機版英雄區背景圖完美自動縮放（超重要！） */
+.hero-full {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('assets/images/background.png');   /* 你原本的圖 */
+  background-position: center center;     /* 圖片永遠置中 */
+  background-repeat: no-repeat;
+  background-size: cover;                 /* 關鍵！自動填滿並等比縮放 */
+  /* 下面這行可選：讓圖片稍微變暗，更突出文字 */
+  filter: brightness(0.7);
+  z-index: -2;
+}
+
+/* 手機直立時特別加強（可選，效果更好） */
+@media (max-width: 768px) {
+  .hero-background {
+    background-attachment: scroll;     /* 避免 iPhone 奇怪的固定bug */
+    background-size: cover;
+    background-position: center 30%;   /* 可以微調上下位置，讓主角臉不要被切掉 */
+  }
+  
+  .hero-content h1 {
+    font-size: 2.8rem !important;
+  }
+  .hero-content p {
+    font-size: 1.2rem !important;
+  }
+}
