@@ -1173,3 +1173,49 @@ body {
   background: rgba(255,255,255,0.2);
 }
 
+/* 手機版英雄區文字自動縮小 + 完美置中（手機專用） */
+@media (max-width: 768px) {
+  .hero-content {
+    padding: 0 20px !important;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem !important;     /* 原來可能 4~5rem，太大 */
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .hero-content h1 span {
+    font-size: 2.8rem !important;     /* 「宥哥」兩個字可以稍微大一點 */
+  }
+
+  .hero-content p {
+    font-size: 1.15rem !important;    /* 副標自動縮小 */
+    line-height: 1.6;
+    margin: 1.5rem 0;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hero-buttons a {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  /* 讓背景圖焦點往上移，避免切到宥哥的頭 */
+  .hero-background {
+    background-position: center 25% !important;
+  }
+}
+
+/* 超窄手機再縮小一點（iPhone SE 之類） */
+@media (max-width: 380px) {
+  .hero-content h1 { font-size: 2.1rem !important; }
+  .hero-content h1 span { font-size: 2.5rem !important; }
+  .hero-content p { font-size: 1.05rem !important; }
+}
